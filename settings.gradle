@@ -1,3 +1,4 @@
 rootProject.name = 'formsys'
 include 'sudoku'
+include 'propositional'
 

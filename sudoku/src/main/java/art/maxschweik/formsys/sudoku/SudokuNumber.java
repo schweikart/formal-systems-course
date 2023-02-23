@@ -20,4 +20,8 @@ public enum SudokuNumber {
   public byte getValue() {
     return this.value;
   }
+
+  public int getIndex() {
+    return this.value - 1;
+  }
 }

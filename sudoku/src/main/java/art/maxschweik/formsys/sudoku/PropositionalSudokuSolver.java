@@ -6,6 +6,7 @@ import art.maxschweik.formsys.propositional.DpllSolver;
 import art.maxschweik.formsys.propositional.Not;
 import art.maxschweik.formsys.propositional.Or;
 import art.maxschweik.formsys.propositional.PropositionalFormula;
+import art.maxschweik.formsys.propositional.Sat4jSolver;
 import art.maxschweik.formsys.propositional.cnf.ConjunctiveNormalForm;
 import java.util.LinkedList;
 import java.util.List;
@@ -62,6 +63,7 @@ public class PropositionalSudokuSolver {
                   atoms[regionRow * 3 + rowInRegion][regionCol * 3 + colInRegion][numberIndex]);
             }
           }
+          formulae.add(regionCondition);
         }
       }
     }
@@ -97,9 +99,31 @@ public class PropositionalSudokuSolver {
 
   public SudokuBoard solve() {
     var cnf = new ConjunctiveNormalForm(this.cnfFormula);
-    System.out.println(cnf);
-    var solver = new DpllSolver(cnf);
-    System.out.println(solver.solve());
-    return null;
+    var solver = new Sat4jSolver(cnf);
+    var solution = solver.solve();
+    if (solution == null) {
+      return null;
+    }
+
+    var solutionContents = new SudokuNumber[9][9];
+    for (int row = 0; row < 9; row++) {
+      for (int col = 0; col < 9; col++) {
+        for (var number : SudokuNumber.values()) {
+          if (solution.getValue(atoms[row][col][number.getIndex()])) {
+            if (solutionContents[row][col] != null) {
+              throw new IllegalStateException();
+            }
+
+            solutionContents[row][col] = number;
+          }
+        }
+
+        if (solutionContents[row][col] == null) {
+          throw new IllegalStateException();
+        }
+      }
+    }
+
+    return new SudokuBoard(solutionContents);
   }
 }

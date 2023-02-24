@@ -13,9 +13,29 @@ public class Interpretation {
   public boolean getValue(Atom atom) {
     Boolean value = this.values.get(atom);
     if (value == null) {
-      throw new IllegalArgumentException("atom is not part of this interpretation");
+      return false;//throw new IllegalArgumentException("atom is not part of this interpretation");
     }
 
     return value;
+  }
+
+  public Interpretation withValue(Atom atom, boolean value) {
+    var newMap = new HashMap<>(this.values);
+    newMap.put(atom, value);
+    return new Interpretation(newMap);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder representation = new StringBuilder();
+    representation.append("Interpretation(");
+    for (var entry : this.values.entrySet()) {
+      representation.append(entry.getKey());
+      representation.append('=');
+      representation.append(entry.getValue());
+      representation.append(", ");
+    }
+    representation.append(')');
+    return representation.toString();
   }
 }

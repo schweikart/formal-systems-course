@@ -55,4 +55,12 @@ public class Literal {
         this.atom.equals(other.atom) &&
         this.isPositive == other.isPositive;
   }
+
+  public Atom getAtom() {
+    return this.atom;
+  }
+
+  public boolean isPositive() {
+    return isPositive;
+  }
 }

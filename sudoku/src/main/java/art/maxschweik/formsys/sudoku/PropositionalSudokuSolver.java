@@ -2,9 +2,11 @@ package art.maxschweik.formsys.sudoku;
 
 import art.maxschweik.formsys.propositional.And;
 import art.maxschweik.formsys.propositional.Atom;
+import art.maxschweik.formsys.propositional.DpllSolver;
 import art.maxschweik.formsys.propositional.Not;
 import art.maxschweik.formsys.propositional.Or;
 import art.maxschweik.formsys.propositional.PropositionalFormula;
+import art.maxschweik.formsys.propositional.cnf.ConjunctiveNormalForm;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -15,6 +17,7 @@ public class PropositionalSudokuSolver {
    */
   private final Atom[][][] atoms = new Atom[9][9][9];
   private final List<PropositionalFormula> formulae = new LinkedList<>();
+  private final PropositionalFormula cnfFormula;
 
   public PropositionalSudokuSolver(SudokuBoard board) {
     this.board = board;
@@ -68,8 +71,12 @@ public class PropositionalSudokuSolver {
       for (int numberIndex2 = 0; numberIndex2 < numberIndex1; numberIndex2++) {
         for (int row = 0; row < 9; row++) {
           for (int col = 0; col < 9; col++) {
-            formulae.add(
-                new Not(new And(atoms[row][col][numberIndex1], atoms[row][col][numberIndex2])));
+            formulae.add(new Or(
+                new Not(atoms[row][col][numberIndex1]),
+                new Not(atoms[row][col][numberIndex2])
+            ));
+            // formulae.add(
+                //new Not(new And(atoms[row][col][numberIndex1], atoms[row][col][numberIndex2])));
           }
         }
       }
@@ -85,11 +92,14 @@ public class PropositionalSudokuSolver {
       }
     }
 
-    PropositionalFormula bigFormula = formulae.stream().reduce(And::new).orElseThrow();
-    System.out.println(bigFormula.getAtoms().size());
+    cnfFormula = formulae.stream().reduce(And::new).orElseThrow();
   }
 
   public SudokuBoard solve() {
+    var cnf = new ConjunctiveNormalForm(this.cnfFormula);
+    System.out.println(cnf);
+    var solver = new DpllSolver(cnf);
+    System.out.println(solver.solve());
     return null;
   }
 }

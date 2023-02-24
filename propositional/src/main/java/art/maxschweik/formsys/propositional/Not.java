@@ -10,6 +10,10 @@ public class Not implements PropositionalFormula {
     this.content = content;
   }
 
+  public PropositionalFormula getContent() {
+    return this.content;
+  }
+
   @Override
   public boolean getValue(Interpretation interpretation) {
     return !content.getValue(interpretation);

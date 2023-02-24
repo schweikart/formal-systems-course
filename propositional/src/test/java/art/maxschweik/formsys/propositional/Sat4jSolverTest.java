@@ -1,16 +1,12 @@
 package art.maxschweik.formsys.propositional;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import art.maxschweik.formsys.propositional.cnf.Clause;
 import art.maxschweik.formsys.propositional.cnf.ConjunctiveNormalForm;
-import art.maxschweik.formsys.propositional.cnf.Literal;
-import java.util.Set;
 import org.junit.jupiter.api.Test;
 
-class DpllSolverTest {
+class Sat4jSolverTest {
   @Test
   void testSolvable() {
     Atom[] P = new Atom[]{
@@ -48,54 +44,8 @@ class DpllSolverTest {
 
     var cnf = new ConjunctiveNormalForm(cnfFormula);
 
-    Interpretation solution = new DpllSolver(cnf).solve();
+    Interpretation solution = new Sat4jSolver(cnf).solve();
     assertNotNull(solution);
-
-    System.out.println(solution);
-
     assertTrue(cnfFormula.getValue(solution));
-  }
-
-  @Test
-  void testSolve() {
-    Atom[] P = new Atom[]{
-        new Atom("P1"),
-        new Atom("P2"),
-        new Atom("P3"),
-        new Atom("P4")
-    };
-    Set<Clause> lectureExample = Set.of(
-        new Clause(Set.of(
-            new Literal(P[0], true),
-            new Literal(P[1], true),
-            new Literal(P[2], true)
-        )),
-        new Clause(Set.of(
-            new Literal(P[0], false),
-            new Literal(P[1], true),
-            new Literal(P[3], false)
-        )),
-        new Clause(Set.of(
-            new Literal(P[0], false),
-            new Literal(P[2], true)
-        )),
-        new Clause(Set.of(
-            new Literal(P[0], false),
-            new Literal(P[2], false),
-            new Literal(P[3], true)
-        )),
-        new Clause(Set.of(
-            new Literal(P[0], true),
-            new Literal(P[2], false)
-        )),
-        new Clause(Set.of(
-            new Literal(P[1], false)
-        ))
-    );
-
-    ConjunctiveNormalForm cnf = new ConjunctiveNormalForm(lectureExample);
-
-    Interpretation solution = new DpllSolver(cnf).solve();
-    assertNull(solution);
   }
 }

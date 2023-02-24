@@ -3,15 +3,18 @@ package art.maxschweik.formsys.propositional.cnf;
 import art.maxschweik.formsys.propositional.And;
 import art.maxschweik.formsys.propositional.PropositionalFormula;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.Objects;
 import java.util.Set;
+import java.util.Spliterator;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
  * Immutable
  */
-public class ConjunctiveNormalForm {
+public class ConjunctiveNormalForm implements Iterable<Clause> {
   private final Set<Clause> clauses;
 
   public ConjunctiveNormalForm(Set<Clause> clauses) {
@@ -73,5 +76,20 @@ public class ConjunctiveNormalForm {
   public boolean equals(Object obj) {
     return obj instanceof ConjunctiveNormalForm other &&
         this.clauses.equals(other.clauses);
+  }
+
+  @Override
+  public Iterator<Clause> iterator() {
+    return this.clauses.iterator();
+  }
+
+  @Override
+  public void forEach(Consumer<? super Clause> action) {
+    Iterable.super.forEach(action);
+  }
+
+  @Override
+  public Spliterator<Clause> spliterator() {
+    return Iterable.super.spliterator();
   }
 }
